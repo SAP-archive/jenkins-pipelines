@@ -48,11 +48,20 @@ More scenarios will be offered soon.
 In the [GitHub repository of this project][piper-pipelines] you find a list of Github issues for known bugs or planned future improvements.
 Feel free to open new issues for feature requests, bugs or general feedback.
 
+## [Contribution Guidelines][piper-pipelines-contribution]
+
+## [License][piper-pipelines-license]
+
+Copyright (c) 2017 SAP SE or an SAP affiliate company. All rights reserved.
+This file is licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE file][piper-pipelines-license]
+
 [piper-library]: https://github.com/SAP/jenkins-library   
 [piper-pipelines]: https://github.com/SAP/jenkins-pipelines
 [piper-library-installation]: https://sap.github.io/jenkins-library/#installation   
 [piper-pipelines-fiori]: https://github.com/SAP/jenkins-pipelines/blob/master/pipelines/ui5-sap-cp/Jenkinsfile
 [piper-pipelines-fiori-doc]: https://github.com/SAP/jenkins-pipelines/blob/master/pipelines/ui5-sap-cp/README.md
+[piper-pipelines-license]: ./LICENSE
+[piper-pipelines-contribution]: .//CONTRIBUTING.md
 [jenkins-doc-pipelines]: https://jenkins.io/solutions/pipeline    
 [jenkins-doc-libraries]: https://jenkins.io/doc/book/pipeline/shared-libraries    
 [jenkins-doc-steps]: https://jenkins.io/doc/pipeline/steps    
