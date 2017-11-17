@@ -53,7 +53,7 @@ differ:
 
     * `GIT_URL`: The URL to the Git repository that the application resides in.
     * `GIT_BRANCH`: The branch of the Git repository that should be checked out
-      for the built.
+      for the build.
 
 # Configuration
 
