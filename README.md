@@ -65,7 +65,7 @@ before opening a pull request.
 Copyright (c) 2017 SAP SE or an SAP affiliate company. All rights reserved.
 This file is licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE file][piper-pipelines-license]
 
-[piper-library]: https://github.com/SAP/jenkins-library   
+[piper-library]: https://github.com/SAP/jenkins-library
 [piper-pipelines]: https://github.com/SAP/jenkins-pipelines
 [piper-pipelines-issues]: https://github.com/SAP/jenkins-pipelines/issues
 [piper-library-installation]: https://github.com/SAP/jenkins-library/blob/master/README.md#download-and-installation
@@ -73,8 +73,8 @@ This file is licensed under the Apache Software License, v. 2 except as noted ot
 [piper-pipelines-fiori-doc]: https://github.com/SAP/jenkins-pipelines/blob/master/pipelines/ui5-sap-cp/README.md
 [piper-pipelines-license]: ./LICENSE
 [piper-pipelines-contribution]: .//CONTRIBUTING.md
-[jenkins-doc-pipelines]: https://jenkins.io/solutions/pipeline    
-[jenkins-doc-libraries]: https://jenkins.io/doc/book/pipeline/shared-libraries    
-[jenkins-doc-steps]: https://jenkins.io/doc/pipeline/steps    
-[jenkins-doc-pipelineFromSCM]: https://jenkins.io/doc/book/pipeline/getting-started/#defining-a-pipeline-in-scm    
-[jenkins-plugin-sharedlibs]: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Shared+Groovy+Libraries+Plugin    
+[jenkins-doc-pipelines]: https://jenkins.io/solutions/pipeline
+[jenkins-doc-libraries]: https://jenkins.io/doc/book/pipeline/shared-libraries
+[jenkins-doc-steps]: https://jenkins.io/doc/pipeline/steps
+[jenkins-doc-pipelineFromSCM]: https://jenkins.io/doc/book/pipeline/getting-started/#defining-a-pipeline-in-scm
+[jenkins-plugin-sharedlibs]: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Shared+Groovy+Libraries+Plugin
