@@ -27,6 +27,13 @@ Jenkins community at hand to optimize your continuous delivery processes.
 You can run the Jenkinsfiles out of the box or take them as a starting point for
 project-specific adaptations.
 
+## Overview of available pipelines
+
+Currently, the following scenarios are supported:
+
+* [The build and deployment of a SAPUI5 or SAP Fiori application to SAP Cloud
+  Platform][piper-pipelines-fiori-doc].
+
 # Requirements
 
 * [Installed shared library][piper-library-installation] of project "Piper".
@@ -64,16 +71,9 @@ repository on GitHub.com:
 
 Each `Jenkinsfile` requires project specific configuration files in the
 application sources. Templates for these configuration files are available in
-the same folders as the respective `Jenkinsfile`.
-
-## Overview of available pipelines
-
-Currently, the following scenarios are supported:
-
-* [The build and deployment of a SAPUI5 or SAP Fiori application to SAP Cloud
-  Platform][piper-pipelines-fiori-doc].
-
-More scenarios will be offered soon. 
+the same folders as the respective `Jenkinsfile`. Links to the respective
+documentations can be found in the
+[pipeline overview](#overview-of-available-pipelines) section.
 
 # Known Issues
 
