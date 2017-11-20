@@ -55,6 +55,11 @@ differ:
     * `GIT_BRANCH`: The branch of the Git repository that should be checked out
       for the build.
 
+Example configuration for consumption of a `Jenkinsfile` directly out of this
+repository on GitHub.com: 
+
+![Library Setup](./documentation/docs/images/setupInJenkins.png)
+
 # Configuration
 
 Each `Jenkinsfile` requires project specific configuration files in the
