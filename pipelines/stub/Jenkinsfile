@@ -1,0 +1,37 @@
+// The shared library declaration is required here. Otherwise
+// loading of the central pipeline script fails.
+@Library('piper-library-os') _
+
+node {
+
+    // temporary folder used for storing the central jenkins file locally.
+    def TMP_PIPELINE_FOLDER = "pipeline-${UUID.randomUUID().toString()}"
+
+    // The coordinates of the central pipeline script
+    def REPO = 'https://github.com/SAP/jenkins-pipelines.git'
+    def BRANCH = 'master'
+    def PATH = 'pipelines/ui5-sap-cp/Jenkinsfile'
+
+    // In case access to the repository containing the central pipeline
+    // script is restricted the credentialsId of the credentials used for
+    // accessing the repository needs to be provided below. The corresponding
+    // credentials needs to be configured in Jenkins accordingly.
+    def CREDENTIALS_ID = ''
+
+    deleteDir()
+    dir(TMP_PIPELINE_FOLDER) {
+
+        checkout([$class: 'GitSCM', branches: [[name: BRANCH]], 
+                                    doGenerateSubmoduleConfigurations: false, 
+                                    extensions: [[$class: 'SparseCheckoutPaths', 
+                                                  sparseCheckoutPaths: [[path: PATH]]
+                                                ]], 
+                                                submoduleCfg: [], 
+                                                userRemoteConfigs: [[credentialsId: CREDENTIALS_ID, 
+                                                                     url: REPO
+                                                                    ]]
+                  ])
+    }
+    
+    load "${TMP_PIPELINE_FOLDER}/${PATH}"
+}

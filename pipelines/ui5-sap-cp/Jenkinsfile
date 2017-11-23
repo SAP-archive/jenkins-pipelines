@@ -21,9 +21,8 @@ node() {
 
   stage("Clone sources and setup environment"){
     deleteDir()
-    def gitCoordinates = new Utils().retrieveGitCoordinates(this)
-    checkout([$class: 'GitSCM', branches: [[name: gitCoordinates.branch]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: APP_PATH]], submoduleCfg: [], userRemoteConfigs: [[url: gitCoordinates.url]]])
     dir(APP_PATH) {
+      checkout scm
       setupCommonPipelineEnvironment script: this, configFile: CONFIG_FILE
     }
     MTA_JAR_LOCATION = commonPipelineEnvironment.getConfigProperty('MTA_HOME')
@@ -69,5 +68,3 @@ node() {
     }
   }
 }
-
-
