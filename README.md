@@ -47,25 +47,39 @@ SCM][jenkins-doc-pipelineFromSCM]. The location of the `Jenkinsfile` may
 differ:
 
 1. The `Jenkinsfile` can be copied into the source code repository of the
-   application. In that case, no additional pipeline job parameters are required
-   to retrieve the application source code repository.
+   application. The `Jenkinsfile` is referenced in the pipeline job
+   configuration.
 
 2. The `Jenkinsfile` can be kept in its own repository separate from the
    application. In case you want to apply the `Jenkinsfile` to multiple
    applications, this approach is beneficial since you only need to maintain the
    `Jenkinsfile` in one place. You can consume the `Jenkinsfile` e.g. directly
-   from this repository on GitHub.com or from your own fork of it. You must
-   define two mandatory Jenkins pipeline job parameters to specify the location
-   of your application:
+   from this repository on GitHub.com or from your own fork of it.
+   In this case there is a stub `Jenkinsfile` required in the source repository.
+   The stub `Jenkinsfile` needs to be configured in the pipeline job definition.
+   The stub `Jenkinsfile` needs to contain the `pipelineExecute` execute step as
+   it is contained in the piper library.
+   The stub `Jenkinsfile` looks like
+```groovy
+#!groovy
 
-    * `GIT_URL`: The URL to the Git repository that the application resides in.
-    * `GIT_BRANCH`: The branch of the Git repository that should be checked out
-      for the build.
+@Library('piper-library-os') _
 
-Example configuration for consumption of a `Jenkinsfile` directly out of this
-repository on GitHub.com: 
+// The coordinates of the central pipeline script
+def REPO = '<REPO>'
+def BRANCH = '<BRANCH>'
+def PATH = '<PATH>'
 
-![Library Setup](./documentation/docs/images/setupInJenkins.png)
+// In case access to the repository containing the central pipeline
+// script is restricted the credentialsId of the credentials used for
+// accessing the repository needs to be provided below. The corresponding
+// credentials needs to be configured in Jenkins accordingly.
+def CREDENTIALS_ID = params.PIPELINE_REPO_CREDENTIALS_ID
+
+echo "Launching pipeline '${PATH}' from '${BRANCH}@${REPO}' using credentialsId '${CREDENTIALS_ID}'."
+
+pipelineExecute repoUrl: REPO, branch: BRANCH, path: PATH, credentialsId: CREDENTIALS_ID
+```
 
 # Configuration
 
