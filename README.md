@@ -47,25 +47,18 @@ SCM][jenkins-doc-pipelineFromSCM]. The location of the `Jenkinsfile` may
 differ:
 
 1. The `Jenkinsfile` can be copied into the source code repository of the
-   application. In that case, no additional pipeline job parameters are required
-   to retrieve the application source code repository.
+   application. The `Jenkinsfile` is referenced in the pipeline job
+   configuration.
 
 2. The `Jenkinsfile` can be kept in its own repository separate from the
    application. In case you want to apply the `Jenkinsfile` to multiple
    applications, this approach is beneficial since you only need to maintain the
    `Jenkinsfile` in one place. You can consume the `Jenkinsfile` e.g. directly
-   from this repository on GitHub.com or from your own fork of it. You must
-   define two mandatory Jenkins pipeline job parameters to specify the location
-   of your application:
-
-    * `GIT_URL`: The URL to the Git repository that the application resides in.
-    * `GIT_BRANCH`: The branch of the Git repository that should be checked out
-      for the build.
-
-Example configuration for consumption of a `Jenkinsfile` directly out of this
-repository on GitHub.com: 
-
-![Library Setup](./documentation/docs/images/setupInJenkins.png)
+   from this repository on GitHub.com or from your own fork of it.
+   In this case there is a stub `Jenkinsfile` required in the source repository.
+   An ready-to-use stub pipeline script is available
+   [here](pipelines/utility/pipelineExecutor/Jenkinsfile)
+   ([docu](pipelines/utility/pipelineExecutor/README.md)).
 
 # Configuration
 
