@@ -17,7 +17,7 @@ node() {
   //Global variables:
   APP_PATH = 'src'
   SRC = "${WORKSPACE}/${APP_PATH}"
-  CONFIG_FILE = "${SRC}/.pipeline/config.properties"
+  CONFIG_FILE = "${SRC}/pipelines/ui5-sap-cp/.pipeline/config.properties"
 
   stage("Clone sources and setup environment"){
     deleteDir()
