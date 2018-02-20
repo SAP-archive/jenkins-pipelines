@@ -35,7 +35,6 @@ node() {
   stage("Validate configuration"){
     echo '[INFO] Validating configuration.'
     if (!MTA_JAR_LOCATION) error "The property 'MTA_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!NEO_HOME) error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
     if (!CI_DEPLOY_ACCOUNT) error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
     echo '[INFO] The validation was successful.'
   }
@@ -44,7 +43,6 @@ node() {
     echo '[INFO] Validating installation requirements.'
     toolValidate tool: 'java', home: JAVA_HOME
     toolValidate tool: 'mta', home: MTA_JAR_LOCATION
-    toolValidate tool: 'neo', home: NEO_HOME
     echo '[INFO] The validation was successful.'
   }
 
