@@ -27,14 +27,12 @@ node() {
     }
     MTA_JAR_LOCATION = commonPipelineEnvironment.getConfigProperty('MTA_HOME')
     NEO_HOME = commonPipelineEnvironment.getConfigProperty('NEO_HOME')
-    CI_DEPLOY_ACCOUNT = commonPipelineEnvironment.getConfigProperty('CI_DEPLOY_ACCOUNT')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
   }
 
   stage("Validate configuration"){
     echo '[INFO] Validating configuration.'
-    if (!CI_DEPLOY_ACCOUNT) error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
     echo '[INFO] The validation was successful.'
   }
 
