@@ -56,7 +56,6 @@ node() {
     }
     MTA_JAR_LOCATION = mtaBuildConfiguration.mtaJarLocation ?: commonPipelineEnvironment.getConfigProperty('MTA_HOME')
     NEO_HOME = neoDeployConfiguration.neoHome ?: commonPipelineEnvironment.getConfigProperty('NEO_HOME')
-    CI_DEPLOY_ACCOUNT = neoDeployConfiguration.account ?: commonPipelineEnvironment.getConfigProperty('CI_DEPLOY_ACCOUNT')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
   }
@@ -66,13 +65,6 @@ node() {
     def newConfig =  isNewConfigFramework(CONFIG_FILE)
 
     echo '[INFO] Validating configuration.'
-    if (!CI_DEPLOY_ACCOUNT) {
-        if(newConfig) {
-            error "The property 'account' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
     echo '[INFO] The validation was successful.'
   }
 
