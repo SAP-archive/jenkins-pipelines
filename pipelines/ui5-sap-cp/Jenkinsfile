@@ -18,10 +18,6 @@ import com.sap.piper.ConfigurationMerger
 CONFIG_FILE_PROPERTIES = '.pipeline/config.properties'
 CONFIG_FILE_YML = '.pipeline/config.yml'
 
-def isNewConfigFramework(def configFile) {
-    return configFile.equals(CONFIG_FILE_YML)
-}
-
 node() {
   //Global variables:
   APP_PATH = 'src'
@@ -58,14 +54,6 @@ node() {
     NEO_HOME = neoDeployConfiguration.neoHome ?: commonPipelineEnvironment.getConfigProperty('NEO_HOME')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
-  }
-
-  stage("Validate configuration"){
-
-    def newConfig =  isNewConfigFramework(CONFIG_FILE)
-
-    echo '[INFO] Validating configuration.'
-    echo '[INFO] The validation was successful.'
   }
 
   stage("Build Fiori App"){
