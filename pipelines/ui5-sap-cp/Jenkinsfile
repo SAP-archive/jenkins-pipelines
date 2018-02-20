@@ -29,7 +29,6 @@ node() {
     NEO_HOME = commonPipelineEnvironment.getConfigProperty('NEO_HOME')
     DEPLOY_HOST = commonPipelineEnvironment.getConfigProperty('DEPLOY_HOST')
     CI_DEPLOY_ACCOUNT = commonPipelineEnvironment.getConfigProperty('CI_DEPLOY_ACCOUNT')
-    neoCredentialsId = commonPipelineEnvironment.getConfigProperty('neoCredentialsId')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
   }
@@ -40,7 +39,6 @@ node() {
     if (!NEO_HOME) error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
     if (!DEPLOY_HOST) error "The property 'DEPLOY_HOST' is not configured. Please configure the property at '$CONFIG_FILE'."
     if (!CI_DEPLOY_ACCOUNT) error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!neoCredentialsId) error "The property 'neoCredentialsId' is not configured. Please configure the property at '$CONFIG_FILE'."
     echo '[INFO] The validation was successful.'
   }
 
