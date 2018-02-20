@@ -31,11 +31,6 @@ node() {
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
   }
 
-  stage("Validate configuration"){
-    echo '[INFO] Validating configuration.'
-    echo '[INFO] The validation was successful.'
-  }
-
   stage("Build Fiori App"){
     dir(SRC){
       withEnv(["http_proxy=${proxy}", "https_proxy=${httpsProxy}"]) {
