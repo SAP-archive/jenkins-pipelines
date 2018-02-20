@@ -73,13 +73,6 @@ node() {
             error "The property 'MTA_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
         }
     }
-    if (!NEO_HOME) {
-        if(newConfig) {
-            error "The property 'neoHome' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
     if (!CI_DEPLOY_ACCOUNT) {
         if(newConfig) {
             error "The property 'account' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
@@ -94,7 +87,6 @@ node() {
     echo '[INFO] Validating installation requirements.'
     toolValidate tool: 'java', home: JAVA_HOME
     toolValidate tool: 'mta', home: MTA_JAR_LOCATION
-    toolValidate tool: 'neo', home: NEO_HOME
     echo '[INFO] The validation was successful.'
   }
 
