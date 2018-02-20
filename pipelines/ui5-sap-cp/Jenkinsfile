@@ -76,11 +76,6 @@ node() {
     echo '[INFO] The validation was successful.'
   }
 
-  stage("Validate installations"){
-    echo '[INFO] Validating installation requirements.'
-    echo '[INFO] The validation was successful.'
-  }
-
   stage("Build Fiori App"){
     dir(SRC){
       withEnv(["http_proxy=${proxy}", "https_proxy=${httpsProxy}"]) {
