@@ -40,7 +40,6 @@ node() {
 
   stage("Validate installations"){
     echo '[INFO] Validating installation requirements.'
-    toolValidate tool: 'java', home: JAVA_HOME
     echo '[INFO] The validation was successful.'
   }
 
