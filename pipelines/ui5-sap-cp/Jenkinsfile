@@ -47,37 +47,17 @@ node() {
                                                         ConfigurationLoader.stepConfiguration(this, 'mtaBuild'), (Set)['mtaJarLocation'],
                                                         ConfigurationLoader.defaultStepConfiguration(this, 'mtaBuild'))
     }
+
     MTA_JAR_LOCATION = mtaBuildConfiguration.mtaJarLocation ?: commonPipelineEnvironment.getConfigProperty('MTA_HOME')
     NEO_HOME = neoDeployConfiguration.neoHome ?: commonPipelineEnvironment.getConfigProperty('NEO_HOME')
-    DEPLOY_HOST = neoDeployConfiguration.host ?: commonPipelineEnvironment.getConfigProperty('DEPLOY_HOST')
-    CI_DEPLOY_ACCOUNT = neoDeployConfiguration.account ?: commonPipelineEnvironment.getConfigProperty('CI_DEPLOY_ACCOUNT')
-    neoCredentialsId = neoDeployConfiguration.credentialsId ?: commonPipelineEnvironment.getConfigProperty('neoCredentialsId')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
-  }
-
-  stage("Validate configuration"){
-    echo '[INFO] Validating configuration.'
-    if (!MTA_JAR_LOCATION) error "The property 'MTA_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!NEO_HOME) error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!DEPLOY_HOST) error "The property 'DEPLOY_HOST' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!CI_DEPLOY_ACCOUNT) error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!neoCredentialsId) error "The property 'neoCredentialsId' is not configured. Please configure the property at '$CONFIG_FILE'."
-    echo '[INFO] The validation was successful.'
-  }
-
-  stage("Validate installations"){
-    echo '[INFO] Validating installation requirements.'
-    toolValidate tool: 'java', home: JAVA_HOME
-    toolValidate tool: 'mta', home: MTA_JAR_LOCATION
-    toolValidate tool: 'neo', home: NEO_HOME
-    echo '[INFO] The validation was successful.'
   }
 
   stage("Build Fiori App"){
     dir(SRC){
       withEnv(["http_proxy=${proxy}", "https_proxy=${httpsProxy}"]) {
-        MTAR_FILE_PATH = mtaBuild mtaJarLocation: MTA_JAR_LOCATION, buildTarget: 'NEO'
+        MTAR_FILE_PATH = mtaBuild script: this, mtaJarLocation: MTA_JAR_LOCATION, buildTarget: 'NEO'
       }
     }
   }
