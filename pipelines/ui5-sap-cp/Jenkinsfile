@@ -15,13 +15,6 @@ import com.sap.piper.ConfigurationMerger
 
 @Library('piper-library-os') _
 
-def CONFIG_FILE_PROPERTIES = '.pipeline/config.properties'
-def CONFIG_FILE_YML = '.pipeline/config.yml'
-
-def isNewConfigFramework(def configFile) {
-    return configFile.equals(CONFIG_FILE_YML)
-}
-
 node() {
   //Global variables:
   APP_PATH = 'src'
@@ -59,68 +52,14 @@ node() {
     }
     MTA_JAR_LOCATION = mtaBuildConfiguration.mtaJarLocation ?: commonPipelineEnvironment.getConfigProperty('MTA_HOME')
     NEO_HOME = neoDeployConfiguration.neoHome ?: commonPipelineEnvironment.getConfigProperty('NEO_HOME')
-    DEPLOY_HOST = neoDeployConfiguration.host ?: commonPipelineEnvironment.getConfigProperty('DEPLOY_HOST')
-    CI_DEPLOY_ACCOUNT = neoDeployConfiguration.account ?: commonPipelineEnvironment.getConfigProperty('CI_DEPLOY_ACCOUNT')
-    neoCredentialsId = neoDeployConfiguration.neoCredentialsId ?: commonPipelineEnvironment.getConfigProperty('neoCredentialsId')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
-  }
-
-  stage("Validate configuration"){
-
-    def newConfig =  isNewConfigFramework(CONFIG_FILE)
-
-    echo '[INFO] Validating configuration.'
-    if (!MTA_JAR_LOCATION) {
-        if(newConfig) {
-            error "The property 'mtaJarLocation' is not configured inside step configuration '$STEP_CONFIG_MTA_BUILD'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'MTA_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
-    if (!NEO_HOME) {
-        if(newConfig) {
-            error "The property 'neoHome' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
-    if (!DEPLOY_HOST) {
-        if(newConfig) {
-            error "The property 'host' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'DEPLOY_HOST' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
-    if (!CI_DEPLOY_ACCOUNT) {
-        if(newConfig) {
-            error "The property 'account' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
-    if (!neoCredentialsId) {
-        if(newConfig) {
-            error "The property 'neoCredentialsId' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
-        } else {
-            error "The property 'neoCredentialsId' is not configured. Please configure the property at '$CONFIG_FILE'."
-        }
-    }
-    echo '[INFO] The validation was successful.'
-  }
-
-  stage("Validate installations"){
-    echo '[INFO] Validating installation requirements.'
-    toolValidate tool: 'java', home: JAVA_HOME
-    toolValidate tool: 'mta', home: MTA_JAR_LOCATION
-    toolValidate tool: 'neo', home: NEO_HOME
-    echo '[INFO] The validation was successful.'
   }
 
   stage("Build Fiori App"){
     dir(SRC){
       withEnv(["http_proxy=${proxy}", "https_proxy=${httpsProxy}"]) {
-        MTAR_FILE_PATH = mtaBuild mtaJarLocation: MTA_JAR_LOCATION, buildTarget: 'NEO'
+        MTAR_FILE_PATH = mtaBuild script: this, mtaJarLocation: MTA_JAR_LOCATION, buildTarget: 'NEO'
       }
     }
   }
