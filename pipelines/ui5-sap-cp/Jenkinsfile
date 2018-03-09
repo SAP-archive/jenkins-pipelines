@@ -51,7 +51,7 @@ node() {
       setupCommonPipelineEnvironment script: this, configFile: CONFIG_FILE
       prepareDefaultValues script: this
       neoDeployConfiguration = ConfigurationMerger.merge([:], (Set)[],
-                                                         ConfigurationLoader.stepConfiguration(this, STEP_CONFIG_NEO_DEPLOY), (Set)['neoHome', 'host', 'account', 'credentialsId'],
+                                                         ConfigurationLoader.stepConfiguration(this, STEP_CONFIG_NEO_DEPLOY), (Set)['neoHome', 'host', 'account', 'neoCredentialsId'],
                                                          ConfigurationLoader.defaultStepConfiguration(this, 'neoDeploy'))
       mtaBuildConfiguration = ConfigurationMerger.merge([:], (Set)[],
                                                         ConfigurationLoader.stepConfiguration(this, STEP_CONFIG_MTA_BUILD), (Set)['mtaJarLocation'],
@@ -61,7 +61,7 @@ node() {
     NEO_HOME = neoDeployConfiguration.neoHome ?: commonPipelineEnvironment.getConfigProperty('NEO_HOME')
     DEPLOY_HOST = neoDeployConfiguration.host ?: commonPipelineEnvironment.getConfigProperty('DEPLOY_HOST')
     CI_DEPLOY_ACCOUNT = neoDeployConfiguration.account ?: commonPipelineEnvironment.getConfigProperty('CI_DEPLOY_ACCOUNT')
-    neoCredentialsId = neoDeployConfiguration.credentialsId ?: commonPipelineEnvironment.getConfigProperty('neoCredentialsId')
+    neoCredentialsId = neoDeployConfiguration.neoCredentialsId ?: commonPipelineEnvironment.getConfigProperty('neoCredentialsId')
     proxy = commonPipelineEnvironment.getConfigProperty('proxy') ?: ''
     httpsProxy = commonPipelineEnvironment.getConfigProperty('httpsProxy') ?: ''
   }
@@ -101,7 +101,7 @@ node() {
     }
     if (!neoCredentialsId) {
         if(newConfig) {
-            error "The property 'credentialsId' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
+            error "The property 'neoCredentialsId' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
         } else {
             error "The property 'neoCredentialsId' is not configured. Please configure the property at '$CONFIG_FILE'."
         }
