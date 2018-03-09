@@ -15,6 +15,13 @@ import com.sap.piper.ConfigurationMerger
 
 @Library('piper-library-os') _
 
+def CONFIG_FILE_PROPERTIES = '.pipeline/config.properties'
+def CONFIG_FILE_YML = '.pipeline/config.yml'
+
+def isNewConfigFramework(def configFile) {
+    return configFile.equals(CONFIG_FILE_YML)
+}
+
 node() {
   //Global variables:
   APP_PATH = 'src'
@@ -24,6 +31,9 @@ node() {
   CONFIG_FILE_YML = '.pipeline/config.yml'
 
   def CONFIG_FILE
+
+  def STEP_CONFIG_NEO_DEPLOY='neoDeploy'
+  def STEP_CONFIG_MTA_BUILD='mtaBuild'
 
   stage("Clone sources and setup environment"){
     deleteDir()
@@ -41,10 +51,10 @@ node() {
       setupCommonPipelineEnvironment script: this, configFile: CONFIG_FILE
       prepareDefaultValues script: this
       neoDeployConfiguration = ConfigurationMerger.merge([:], (Set)[],
-                                                         ConfigurationLoader.stepConfiguration(this, 'neoDeploy'), (Set)['neoHome', 'host', 'account', 'credentialsId'],
+                                                         ConfigurationLoader.stepConfiguration(this, STEP_CONFIG_NEO_DEPLOY), (Set)['neoHome', 'host', 'account', 'credentialsId'],
                                                          ConfigurationLoader.defaultStepConfiguration(this, 'neoDeploy'))
       mtaBuildConfiguration = ConfigurationMerger.merge([:], (Set)[],
-                                                        ConfigurationLoader.stepConfiguration(this, 'mtaBuild'), (Set)['mtaJarLocation'],
+                                                        ConfigurationLoader.stepConfiguration(this, STEP_CONFIG_MTA_BUILD), (Set)['mtaJarLocation'],
                                                         ConfigurationLoader.defaultStepConfiguration(this, 'mtaBuild'))
     }
     MTA_JAR_LOCATION = mtaBuildConfiguration.mtaJarLocation ?: commonPipelineEnvironment.getConfigProperty('MTA_HOME')
@@ -57,12 +67,45 @@ node() {
   }
 
   stage("Validate configuration"){
+
+    def newConfig =  isNewConfigFramework(def configFile)
+
     echo '[INFO] Validating configuration.'
-    if (!MTA_JAR_LOCATION) error "The property 'MTA_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!NEO_HOME) error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!DEPLOY_HOST) error "The property 'DEPLOY_HOST' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!CI_DEPLOY_ACCOUNT) error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
-    if (!neoCredentialsId) error "The property 'neoCredentialsId' is not configured. Please configure the property at '$CONFIG_FILE'."
+    if (!MTA_JAR_LOCATION) {
+        if(newConfig) {
+            error "The property 'mtaJarLocation' is not configured inside step configuration '$STEP_CONFIG_MTA_BUILD'. Please configure the property at '$CONFIG_FILE'."
+        } else {
+            error "The property 'MTA_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
+        }
+    }
+    if (!NEO_HOME) {
+        if(newConfig) {
+            error "The property 'neoHome' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
+        } else {
+            error "The property 'NEO_HOME' is not configured. Please configure the property at '$CONFIG_FILE'."
+        }
+    }
+    if (!DEPLOY_HOST) {
+        if(newConfig) {
+            error "The property 'host' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
+        } else {
+            error "The property 'DEPLOY_HOST' is not configured. Please configure the property at '$CONFIG_FILE'."
+        }
+    }
+    if (!CI_DEPLOY_ACCOUNT) {
+        if(newConfig) {
+            error "The property 'account' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
+        } else {
+            error "The property 'CI_DEPLOY_ACCOUNT' is not configured. Please configure the property at '$CONFIG_FILE'."
+        }
+    }
+    if (!neoCredentialsId) {
+        if(newConfig) {
+            error "The property 'credentialsId' is not configured inside step configuration '$STEP_CONFIG_NEO_DEPLOY'. Please configure the property at '$CONFIG_FILE'."
+        } else {
+            error "The property 'neoCredentialsId' is not configured. Please configure the property at '$CONFIG_FILE'."
+        }
+    }
     echo '[INFO] The validation was successful.'
   }
 
