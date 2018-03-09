@@ -68,7 +68,7 @@ node() {
 
   stage("Validate configuration"){
 
-    def newConfig =  isNewConfigFramework(def configFile)
+    def newConfig =  isNewConfigFramework(CONFIG_FILE)
 
     echo '[INFO] Validating configuration.'
     if (!MTA_JAR_LOCATION) {
