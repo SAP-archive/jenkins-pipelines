@@ -15,8 +15,8 @@ import com.sap.piper.ConfigurationMerger
 
 @Library('piper-library-os') _
 
-def CONFIG_FILE_PROPERTIES = '.pipeline/config.properties'
-def CONFIG_FILE_YML = '.pipeline/config.yml'
+CONFIG_FILE_PROPERTIES = '.pipeline/config.properties'
+CONFIG_FILE_YML = '.pipeline/config.yml'
 
 def isNewConfigFramework(def configFile) {
     return configFile.equals(CONFIG_FILE_YML)
@@ -26,9 +26,6 @@ node() {
   //Global variables:
   APP_PATH = 'src'
   SRC = "${WORKSPACE}/${APP_PATH}"
-
-  CONFIG_FILE_PROPERTIES = '.pipeline/config.properties'
-  CONFIG_FILE_YML = '.pipeline/config.yml'
 
   def CONFIG_FILE
 
