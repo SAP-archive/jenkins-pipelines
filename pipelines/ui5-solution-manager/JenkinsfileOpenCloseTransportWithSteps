@@ -1,0 +1,88 @@
+#!groovy
+
+/**
+ *	Copyright (c) 2017 SAP SE or an SAP affiliate company.  All rights reserved.
+ *
+ *	This software is the confidential and proprietary information of SAP
+ *	("Confidential Information"). You shall not disclose such Confidential
+ *	Information and shall use it only in accordance with the terms of the
+ *	license agreement you entered into with SAP.
+*/
+
+@Library('piper-library-os') _
+
+node('master') {
+
+  APP_PATH = 'src'
+  SRC = "${WORKSPACE}/${APP_PATH}"
+
+  def cmEndpoint = 'https://fbt.wdf.sap.corp:44300/sap/opu/odata/SAP/AI_CRM_GW_CM_CI_SRV/'
+  def cmCredentialsId = 'CM_CLIENT'
+
+  def changeId
+  def developmentSystemId
+  def isChangeInDevelopment
+  def mtaFilePath
+  def transportRequestId
+
+  stage("Clone sources and setup environment"){
+    deleteDir()
+    dir(APP_PATH) {
+      checkout scm
+      setupCommonPipelineEnvironment script: this
+    }
+  }
+
+  stage("Get Change Document"){
+    changeId = '8000038673'
+    developmentSystemId = 'L21~EXT_SRV'
+  }
+
+  stage("Verify Change Document"){
+
+    echo "[INFO] Verifying change document '$changeId'."
+	
+    withCredentials([usernamePassword(credentialsId: cmCredentialsId, passwordVariable: 'cmPassword', usernameVariable: 'cmUsername')]) {
+        isChangeInDevelopment = shStatus "cmclient \
+            -e $cmEndpoint \
+            -u $cmUsername \
+            -p $cmPassword \
+			-t SOLMAN \
+		    is-change-in-development -cID '$changeId' --return-code"
+    }
+
+	if (isChangeInDevelopment) echo "[INFO] Change document '$changeId' is in development."
+	else error "Change document '$changeId' is not in development."
+  }
+
+  stage("Build Fiori App"){
+    dir(SRC){
+      mtaFilePath = mtaBuild script: this, buildTarget: 'NEO'
+    }
+  }
+
+  stage("Deploy Fiori App"){
+    dir(SRC){
+      neoDeploy script: this, archivePath: mtaFilePath
+    }
+  }
+
+  stage("Open Transport Request"){
+	transportRequestId = transportRequestCreate script: this, changeId: changeId, developmentSystemId: developmentSystemId
+  }
+
+  stage("Upload Fiori App to Transport Request") {
+    dir(SRC){
+	  transportRequestUploadFile script: this, changeId: changeId, transportRequestId: transportRequestId, applicationId: 'HCP', filePath: mtaFilePath
+    }
+  }
+
+  stage("Close Transport Request") {
+    transportRequestRelease script: this, changeId: changeId, transportRequestId: transportRequestId
+  }
+}
+
+Boolean shStatus(String command) {
+    result = sh returnStatus: true, script: command
+    return result == 0
+}

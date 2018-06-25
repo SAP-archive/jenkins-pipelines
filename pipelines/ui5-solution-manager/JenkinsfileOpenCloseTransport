@@ -1,0 +1,136 @@
+#!groovy
+
+/**
+ *	Copyright (c) 2017 SAP SE or an SAP affiliate company.  All rights reserved.
+ *
+ *	This software is the confidential and proprietary information of SAP
+ *	("Confidential Information"). You shall not disclose such Confidential
+ *	Information and shall use it only in accordance with the terms of the
+ *	license agreement you entered into with SAP.
+*/
+
+@Library('piper-library-os') _
+
+node('master') {
+
+  APP_PATH = 'src'
+  SRC = "${WORKSPACE}/${APP_PATH}"
+
+  def cmEndpoint = 'https://fbt.wdf.sap.corp:44300/sap/opu/odata/SAP/AI_CRM_GW_CM_CI_SRV/'
+  def cmCredentialsId = 'CM_CLIENT'
+
+  def changeId
+  def developmentSystemId
+  def isChangeInDevelopment
+  def mtaFilePath
+  def transportRequestId
+
+  stage("Clone sources and setup environment"){
+    deleteDir()
+    dir(APP_PATH) {
+      checkout scm
+      setupCommonPipelineEnvironment script: this
+    }
+  }
+
+  stage("Get Change Document"){
+    changeId = '8000038673'
+    developmentSystemId = 'L21~EXT_SRV'
+  }
+
+  stage("Verify Change Document"){
+
+    echo "[INFO] Verifying change document '$changeId'."
+	
+    withCredentials([usernamePassword(credentialsId: cmCredentialsId, passwordVariable: 'cmPassword', usernameVariable: 'cmUsername')]) {
+        isChangeInDevelopment = shStatus "cmclient \
+            -e $cmEndpoint \
+            -u $cmUsername \
+            -p $cmPassword \
+			-t SOLMAN \
+		    is-change-in-development -cID '$changeId' --return-code"
+    }
+
+	if (isChangeInDevelopment) echo "[INFO] Change document '$changeId' is in development."
+	else error "Change document '$changeId' is not in development."
+  }
+
+  stage("Build Fiori App"){
+    dir(SRC){
+      mtaFilePath = mtaBuild script: this, buildTarget: 'NEO'
+    }
+  }
+
+  stage("Deploy Fiori App"){
+    dir(SRC){
+      neoDeploy script: this, archivePath: mtaFilePath
+    }
+  }
+
+  stage("Open Transport Request"){
+
+    echo "[INFO] Creating transport request for change document '$changeId'."
+	
+    withCredentials([usernamePassword(credentialsId: cmCredentialsId, passwordVariable: 'cmPassword', usernameVariable: 'cmUsername')]) {
+	  try {
+        transportRequestId = shOutput "cmclient \
+            -e $cmEndpoint \
+            -u $cmUsername \
+            -p $cmPassword \
+			-t SOLMAN \
+		    create-transport -cID '$changeId' -dID '$developmentSystemId'"
+      } catch(Exception e) {
+        error "Cannot create a transport request for change id '$changeId'. $e.message."
+      }
+    }
+	
+	if (!transportRequestId) error "Failure creating transport request '$transportRequestId' for change document '$changeId'."
+	echo "[INFO] The transport request '$transportRequestId' for change document '$changeId' has been successfully created."
+  }
+
+  stage("Upload Fiori App to Transport Request") {
+    dir(SRC){
+	 
+	  echo "[INFO] Uploading mta file '$mtaFilePath' to transport request '$transportRequestId' of change document '$changeId'."
+	 
+	  withCredentials([usernamePassword(credentialsId: cmCredentialsId, passwordVariable: 'cmPassword', usernameVariable: 'cmUsername')]) {
+        success = shStatus "cmclient \
+            -e $cmEndpoint \
+            -u $cmUsername \
+            -p $cmPassword \
+			-t SOLMAN \
+            upload-file-to-transport -cID '$changeId' -tID '$transportRequestId' 'HCP' '$mtaFilePath'"
+      }
+
+      if (success) echo "[INFO] Fiori App '$mtaFilePath' successfully uploaded to transport request '$transportRequestId' of change document '$changeId'."
+	  else error "Fiori App '$mtaFilePath' could not be uploaded to transport request '$transportRequestId' of change document '$changeId'."
+    }
+  }
+
+  stage("Close Transport Request") {
+
+	echo "[INFO] Closing transport request '$transportRequestId' for change document '$changeId'."
+
+	withCredentials([usernamePassword(credentialsId: cmCredentialsId, passwordVariable: 'cmPassword', usernameVariable: 'cmUsername')]) {
+        success = shStatus "cmclient \
+            -e $cmEndpoint \
+            -u $cmUsername \
+            -p $cmPassword \
+			-t SOLMAN \
+            release-transport -cID '$changeId' -tID '$transportRequestId'"
+    }
+
+    if (success) echo "[INFO] The transport request '$transportRequestId' of change document '$changeId' was successfully closed."
+	else error "[INFO] The transport request '$transportRequestId' of change document '$changeId' could not be closed."
+  }
+}
+
+String shOutput(String command) {
+    result = sh returnStdout: true, script: command
+    return result.trim()
+}
+
+Boolean shStatus(String command) {
+    result = sh returnStatus: true, script: command
+    return result == 0
+}

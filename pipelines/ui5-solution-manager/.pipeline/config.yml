@@ -1,0 +1,20 @@
+steps:
+  mtaBuild:
+    mtaJarLocation: ''
+  neoDeploy:
+    host: ''
+    account: ''
+    neoCredentialsId: ''
+    neoHome: ''
+  transportRequestCreate:
+    cmCredentialsId: ''
+    cmEndpoint: ''
+  transportRequestGetTransports:
+    cmCredentialsId: ''
+    cmEndpoint: ''
+  transportRequestUploadFile:
+    cmCredentialsId: ''
+    cmEndpoint: ''
+  transportRequestRelease:
+    cmCredentialsId: ''
+    cmEndpoint: ''
