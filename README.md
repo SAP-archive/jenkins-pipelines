@@ -8,6 +8,8 @@ Additional scenarios can also be found here https://sap.github.io/jenkins-librar
 Please open issues in future directly in https://github.com/SAP/jenkins-library/issues
 
 
+After one month we will also clear the content here.
+
 
 ## Community & Support
 
@@ -15,12 +17,6 @@ In the [GitHub repository of the Jenkins library][piper-library] you find a list
 Feel free to open new issues for feature requests, bugs or general feedback there.
 
 [piper-library]: https://github.com/SAP/jenkins-library   
-[piper-pipelines]: https://github.com/SAP/jenkins-pipelines
 [piper-library-installation]: https://sap.github.io/jenkins-library/#installation   
 [piper-pipelines-fiori]: https://sap.github.io/jenkins-library/scenarios/ui5-sap-cp/Readme/
-[piper-pipelines-fiori-doc]: https://github.com/SAP/jenkins-pipelines/blob/master/pipelines/ui5-sap-cp/README.md
-[jenkins-doc-pipelines]: https://jenkins.io/solutions/pipeline    
-[jenkins-doc-libraries]: https://jenkins.io/doc/book/pipeline/shared-libraries    
-[jenkins-doc-steps]: https://jenkins.io/doc/pipeline/steps    
-[jenkins-doc-pipelineFromSCM]: https://jenkins.io/doc/book/pipeline/getting-started/#defining-a-pipeline-in-scm    
-[jenkins-plugin-sharedlibs]: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Shared+Groovy+Libraries+Plugin    
+
