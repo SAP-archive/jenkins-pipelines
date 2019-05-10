@@ -7,10 +7,6 @@ Additional scenarios can also be found here https://sap.github.io/jenkins-librar
 
 Please open issues in future directly in https://github.com/SAP/jenkins-library/issues
 
-
-After one month we will also clear the content here.
-
-
 ## Community & Support
 
 In the [GitHub repository of the Jenkins library][piper-library] you find a list of Github issues for known bugs or planned future improvements.
